@@ -1,0 +1,25 @@
+$bgColor:#00013e;
+$cardBg:#1515bf;
+$bodyFColor:white;
+
+//---mixin styles---
+@mixin fadeAnimate{
+    animation-name: fadeInOut, moveLeft300px, bounce;
+    animation-duration: 2.5s, 5s, 1s;
+    animation-iteration-count: 2, 1, 5;
+    transition: visibility 0s, opacity 1.5s linear;
+}
+
+//------------------
+
+body{
+    background-color: $bgColor;
+    color: $bodyFColor;
+}
+
+.card
+{
+    background-color: $cardBg;
+    @include fadeAnimate;
+}
+
