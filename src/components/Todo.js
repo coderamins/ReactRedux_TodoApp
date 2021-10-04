@@ -5,6 +5,7 @@ import {
   addTodo,
   deleteTodo,
   editTodo,
+  checkTodo,
   removeAllTodos,
 } from "../actions/index";
 import "./todo.css";
@@ -13,6 +14,7 @@ import { FaPlus, FaTrash, FaPenAlt,FaCheck } from "react-icons/fa";
 const Todo = () => {
   const [inputData, setInputData] = useState("");
   const [title, setTitle] = useState("");
+  const [status, setStatus] = useState(1);
   const list = useSelector((state) => state.todoReducers.list);
   const dispatch = useDispatch();
 
@@ -30,7 +32,7 @@ const Todo = () => {
       <button
         className="btn btn-outline-secondary btn-primary"
         type="button"
-        onClick={() => dispatch(addTodo(title,inputData), setInputData(""))}
+        onClick={() => dispatch(addTodo(title,inputData,status), setInputData(""))}
         id="button-addon2"
       >
         <FaPlus style={{ color: "white" }} />
@@ -102,7 +104,7 @@ const Todo = () => {
             {list.map((elem) => {
               return (
                 <div
-                  className="card p-2 d-flex m-1"
+                  className={elem.status===2 ? "card checked p-2 d-flex m-1":"card p-2 d-flex m-1"} 
                   style={{ width: "18rem" }}
                   key={elem.id}
                 >
@@ -123,7 +125,9 @@ const Todo = () => {
                       ></i>
                       <FaTrash />
                     </a>
-                    <a
+                    {
+                      elem.status===2 ? "" :
+                      (<a
                       href="#"
                       className="btn btn-primary m-1"
                       alt="Edit todo"
@@ -134,20 +138,26 @@ const Todo = () => {
                         title="Delete Item"
                       ></i>
                       <FaPenAlt />
-                    </a>
-
-                    <a
+                    </a>)
+                    }
+                    
+                    {
+                      elem.status===2 ? "" :
+                    (<a
                       href="#"
                       className="btn btn-primary m-1 float-end"
                       alt="Check Todo"
-                      onClick={() => handleEditButton(elem)}
+                      onClick={() =>
+                        dispatch(checkTodo(elem.id,2), setInputData(elem.id))
+                      }
                     >
                       <i
                         className="far fa-trash add-btn"
                         title="Check Todo"
                       ></i>
                       <FaCheck />
-                    </a>
+                    </a>)}
+
                   </div>
                 </div>
               );

@@ -1,10 +1,11 @@
-export const addTodo = (title,data) => {
+export const addTodo = (title,data,status) => {
   return {
     type: "ADD_TODO",
     payload: {
       id: new Date().getTime().toString(),
       title:title,
       data: data,
+      status:status
     },
   };
 };
@@ -30,5 +31,15 @@ export const editTodo = (id,title,data) => {
 export const removeAllTodos = () => {
   return {
     type: "DELETE_ALL",
+  };
+};
+
+export const checkTodo = (id,status) => { 
+  return {
+    type: "CHECK_TODO",
+    payload: {
+      id: id,
+      status:status
+    },
   };
 };

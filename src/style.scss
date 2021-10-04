@@ -1,6 +1,7 @@
 $bgColor:#00013e;
 $cardBg:#1515bf;
 $bodyFColor:white;
+$checkedTodo:#828282;
 
 //---mixin styles---
 @mixin fadeAnimate{
@@ -23,3 +24,7 @@ body{
     @include fadeAnimate;
 }
 
+.card.checked
+{
+    background-color: $checkedTodo;
+}

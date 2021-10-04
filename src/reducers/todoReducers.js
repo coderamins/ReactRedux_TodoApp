@@ -7,7 +7,7 @@ const initialData = {
 const todoReducers = (state = initialData, action) => {
   switch (action.type) {
     case "ADD_TODO":
-      const { id,title, data } = action.payload;
+      const { id, title, data, status } = action.payload;
 
       return {
         ...state,
@@ -15,8 +15,9 @@ const todoReducers = (state = initialData, action) => {
           ...state.list,
           {
             id: id,
-            title:title,
+            title: title,
             data: data,
+            status: status,
           },
         ],
       };
@@ -29,14 +30,27 @@ const todoReducers = (state = initialData, action) => {
       };
 
     case "EDIT_TODO":
-      const index = state.list.findIndex((todo) => todo.id === action.payload.id); //finding index of the item
-      const newArray = [...state.list]; //making a new array
-      console.log(action.payload.title);
+      let index = state.list.findIndex(
+        (todo) => todo.id === action.payload.id
+      ); //finding index of the item
+      let newArray = [...state.list];
       newArray[index].title = action.payload.title; //changing value in the new array
       newArray[index].data = action.payload.data; //changing value in the new array
-      var res= {
+      var res = {
         ...state.list, //copying the orignal state
         list: newArray, //reassingning todos to new array
+      };
+
+    case "CHECK_TODO":
+      console.log(action.payload.id);
+      const ch_index = state.list.findIndex(
+        (todo) => todo.id === action.payload.id
+      ); 
+      const ch_newArray = [...state.list];
+      ch_newArray[ch_index].status = action.payload.status;
+      var res = {
+        ...state.list,
+        list: ch_newArray,
       };
 
       return res;
@@ -46,7 +60,6 @@ const todoReducers = (state = initialData, action) => {
         list: [],
       };
 
-      
     default:
       return state;
   }
