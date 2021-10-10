@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import {reduxForm} from 'redux-form';
 
 import {
   addTodo,
@@ -9,9 +10,29 @@ import {
   removeAllTodos,
 } from "../actions/index";
 import "./todo.css";
-import { FaPlus, FaTrash, FaPenAlt,FaCheck } from "react-icons/fa";
+import { FaPlus, FaTrash, FaPenAlt, FaCheck } from "react-icons/fa";
 
-const Todo = () => {
+const validate = values => {
+  const errors = {}
+  if (!values.firstName) {
+    errors.firstName = 'Required'
+  } else if (values.firstName.length < 2) {
+    errors.firstName = 'Minimum be 2 characters or more'
+  }
+  if (!values.email) {
+    errors.email = 'Required'
+  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+    errors.email = 'Invalid email address'
+  }
+  if (!values.lastName) {
+      errors.lastName = 'Required'
+    } else if (values.lastName.length < 2) {
+      errors.lastName = 'Minimum be 2 characters or more'
+    }
+  return errors
+}
+
+let Todo = () => {
   const [inputData, setInputData] = useState("");
   const [title, setTitle] = useState("");
   const [status, setStatus] = useState(1);
@@ -32,7 +53,13 @@ const Todo = () => {
       <button
         className="btn btn-outline-secondary btn-primary"
         type="button"
-        onClick={() => dispatch(addTodo(title,inputData,status), setInputData(""))}
+        onClick={() =>
+          dispatch(
+            addTodo(title, inputData, status),
+            setInputData(""),
+            setTitle("")
+          )
+        }
         id="button-addon2"
       >
         <FaPlus style={{ color: "white" }} />
@@ -43,7 +70,7 @@ const Todo = () => {
         type="button"
         onClick={() =>
           dispatch(
-            editTodo(todoId, title,inputData),
+            editTodo(todoId, title, inputData),
             setInputData(""),
             setFormStatus(1)
           )
@@ -67,7 +94,7 @@ const Todo = () => {
               width="24"
               height="24"
               fill="currentColor"
-              class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"
+              className="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"
               viewBox="0 0 16 16"
               role="img"
               aria-label="Warning:"
@@ -104,60 +131,66 @@ const Todo = () => {
             {list.map((elem) => {
               return (
                 <div
-                  className={elem.status===2 ? "card checked p-2 d-flex m-1":"card p-2 d-flex m-1"} 
+                  className={
+                    elem.status === 2
+                      ? "card checked p-2 d-flex m-1"
+                      : "card p-2 d-flex m-1"
+                  }
                   style={{ width: "18rem" }}
                   key={elem.id}
                 >
                   <div className="card-body">
                     <h3 className="card-title">{elem.title}</h3>
                     <p className="card-text"> {elem.data}</p>
-                    <a
-                      href="#"
-                      alt="Delete todo"
-                      className="btn btn-danger"
-                      onClick={() =>
-                        dispatch(deleteTodo(elem.id), setInputData(elem.id))
-                      }
-                    >
-                      <i
-                        className="far fa-trash add-btn"
-                        title="Delete Item"
-                      ></i>
-                      <FaTrash />
-                    </a>
-                    {
-                      elem.status===2 ? "" :
-                      (<a
-                      href="#"
-                      className="btn btn-primary m-1"
-                      alt="Edit todo"
-                      onClick={() => handleEditButton(elem)}
-                    >
-                      <i
-                        className="far fa-trash add-btn"
-                        title="Delete Item"
-                      ></i>
-                      <FaPenAlt />
-                    </a>)
-                    }
-                    
-                    {
-                      elem.status===2 ? "" :
-                    (<a
-                      href="#"
-                      className="btn btn-primary m-1 float-end"
-                      alt="Check Todo"
-                      onClick={() =>
-                        dispatch(checkTodo(elem.id,2), setInputData(elem.id))
-                      }
-                    >
-                      <i
-                        className="far fa-trash add-btn"
-                        title="Check Todo"
-                      ></i>
-                      <FaCheck />
-                    </a>)}
+                    <div className="">
+                      <a
+                        href="#"
+                        alt="Delete todo"
+                        className="btn btn-danger"
+                        onClick={() =>
+                          dispatch(deleteTodo(elem.id), setInputData(elem.id))
+                        }
+                      >
+                        <i
+                          className="far fa-trash add-btn"
+                          title="Delete Item"
+                        ></i>
+                        <FaTrash />
+                      </a>
+                      {elem.status === 2 ? (
+                        ""
+                      ) : (
+                        <a
+                          href="#"
+                          className="btn btn-primary m-1"
+                          alt="Edit todo"
+                          onClick={() => handleEditButton(elem)}
+                        >
+                          <i
+                            className="far fa-trash add-btn"
+                            title="Delete Item"
+                          ></i>
+                          <FaPenAlt />
+                        </a>
+                      )}
 
+                      {elem.status === 2 ? (
+                        ""
+                      ) : (
+                        <a
+                          href="#"
+                          className="btn btn-primary m-1 float-end"
+                          alt="Check Todo"
+                          onClick={() => dispatch(checkTodo(elem.id, 2))}
+                        >
+                          <i
+                            className="far fa-trash add-btn"
+                            title="Check Todo"
+                          ></i>
+                          <FaCheck />
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </div>
               );
@@ -181,4 +214,9 @@ const Todo = () => {
   );
 };
 
-export default Todo;
+ToDo = reduxForm({
+  form: 'contact',
+  validate,
+})(ToDo);
+
+export default ToDo;

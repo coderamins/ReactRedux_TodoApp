@@ -8,7 +8,7 @@ const todoReducers = (state = initialData, action) => {
   switch (action.type) {
     case "ADD_TODO":
       const { id, title, data, status } = action.payload;
-
+      if(!action.title)
       return {
         ...state,
         list: [
